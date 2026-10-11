@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventPass TT | Organizer Dashboard</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #080d1b;
+    --sidebar: #0c1325;
+    --card: #111b30;
+    --blue: #3984ff;
+    --cyan: #55d6ff;
+    --green: #35d39a;
+    --orange: #ffb454;
+    --red: #ff6577;
+    --text: #f4f7ff;
+    --muted: #929db5;
+    --border: rgba(255,255,255,0.08);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 245px;
+    flex-shrink: 0;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    padding: 26px 17px;
+    display: flex;
+    flex-direction: column;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 9px 35px;
+}
+
+.logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.brand-name {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.brand-name span {
+    color: var(--cyan);
+}
+
+.brand-subtitle {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.nav-label {
+    color: #68748c;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    padding: 0 12px;
+    margin-bottom: 12px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px;
+    margin-bottom: 7px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: rgba(57,132,255,0.13);
+    color: var(--cyan);
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border-top: 1px solid var(--border);
+    padding: 18px 8px;
+    margin-top: 25px;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), #745cff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.profile-name {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.profile-role {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.logout-button {
+    width: 100%;
+    padding: 12px;
+    color: var(--red);
+    background: rgba(255,101,119,0.08);
+    border: 1px solid rgba(255,101,119,0.15);
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background: rgba(255,101,119,0.16);
+}
+
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 32px 36px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border);
+}
+
+.page-label {
+    color: var(--cyan);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    margin-bottom: 9px;
+    font-weight: bold;
+}
+
+.topbar h1 {
+    font-size: 27px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 9px;
+}
+
+button {
+    font-family: inherit;
+}
+
+.refresh-button {
+    background: #14213a;
+    color: white;
+    border: 1px solid #263653;
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+}
+
+.refresh-button:hover {
+    background: #1c3154;
+}
+
+.refresh-button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.welcome-banner {
+    margin-top: 28px;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid rgba(57,132,255,0.2);
+    background:
+        radial-gradient(circle at 90% 10%, rgba(85,214,255,0.14), transparent 30%),
+        linear-gradient(110deg, #13264a, #111b30);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.welcome-banner h2 {
+    font-size: 19px;
+    margin-bottom: 9px;
+}
+
+.welcome-banner p {
+    color: #aebbd4;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.badge {
+    color: var(--green);
+    background: rgba(53,211,154,0.08);
+    border: 1px solid rgba(53,211,154,0.2);
+    border-radius: 30px;
+    padding: 10px 13px;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 32px 0 18px;
+}
+
+.section-heading h2 {
+    font-size: 17px;
+}
+
+.section-heading p {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 22px;
+    transition: 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(57,132,255,0.35);
+}
+
+.stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-title {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.stat-icon {
+    width: 39px;
+    height: 39px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+}
+
+.icon-blue {
+    background: rgba(57,132,255,0.13);
+}
+
+.icon-green {
+    background: rgba(53,211,154,0.12);
+}
+
+.icon-orange {
+    background: rgba(255,180,84,0.12);
+}
+
+.stat-number {
+    font-size: 35px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.stat-description {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 9px;
+}
+
+.mini-progress {
+    height: 5px;
+    margin-top: 18px;
+    background: #253149;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.mini-progress span {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 20px;
+    transition: width 0.5s;
+}
+
+.blue-fill {
+    background: var(--blue);
+}
+
+.green-fill {
+    background: var(--green);
+}
+
+.orange-fill {
+    background: var(--orange);
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: minmax(0,1.5fr) minmax(240px,0.8fr);
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 24px;
+    min-width: 0;
+}
+
+.panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.panel-header h3 {
+    font-size: 15px;
+}
+
+.panel-header p {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 7px;
+}
+
+.panel-tag {
+    background: rgba(57,132,255,0.1);
+    color: var(--cyan);
+    padding: 7px 10px;
+    border-radius: 7px;
+    font-size: 10px;
+}
+
+.event-row {
+    margin-bottom: 23px;
+}
+
+.event-row:last-child {
+    margin-bottom: 0;
+}
+
+.event-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.event-name {
+    font-size: 12px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.event-count {
+    color: var(--cyan);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.event-bar {
+    height: 7px;
+    background: #263149;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.event-bar-fill {
+    height: 100%;
+    width: 0;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transition: width 0.6s;
+}
+
+.empty-state {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+    padding: 20px 0;
+}
+
+.usage-number {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 15px 0 7px;
+}
+
+.usage-subtitle {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.usage-bar {
+    height: 10px;
+    width: 100%;
+    background: #263149;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 25px 0;
+}
+
+.usage-bar-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--blue), var(--green));
+    border-radius: 20px;
+    transition: width 0.6s;
+}
+
+.usage-legend {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.legend-item {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.8;
+}
+
+.legend-item strong {
+    display: block;
+    color: var(--text);
+    font-size: 15px;
+}
+
+.action-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 22px;
+    margin-top: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text);
+    transition: 0.2s;
+}
+
+.action-card:hover {
+    background: #16233d;
+    border-color: rgba(57,132,255,0.4);
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(57,132,255,0.13);
+    font-size: 22px;
+}
+
+.action-card h4 {
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.action-card p {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.action-arrow {
+    margin-left: auto;
+    color: var(--cyan);
+    font-size: 20px;
+}
+
+.footer {
+    text-align: center;
+    color: #59657c;
+    font-size: 10px;
+    margin-top: 35px;
+}
+
+#loading {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+#errorMessage {
+    display: none;
+    margin-top: 20px;
+    padding: 13px;
+    border-radius: 10px;
+    background: rgba(255,101,119,0.1);
+    border: 1px solid rgba(255,101,119,0.2);
+    color: #ff8795;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+@media(max-width: 1050px) {
+    .sidebar {
+        width: 215px;
+    }
+
+    .main {
+        padding: 26px 22px;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 720px) {
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 15px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        padding: 0 5px 15px;
+    }
+
+    .nav-label,
+    .sidebar-bottom {
+        display: none;
+    }
+
+    .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+    }
+
+    .nav-link {
+        white-space: nowrap;
+        padding: 10px;
+        margin: 0;
+    }
+
+    .main {
+        padding: 22px 15px;
+    }
+
+    .topbar h1 {
+        font-size: 23px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="logo">EP</div>
+
+            <div>
+                <div class="brand-name">EVENTPASS <span>TT</span></div>
+                <div class="brand-subtitle">EVENT MANAGEMENT</div>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav>
+            <a href="organizer-dashboard.html" class="nav-link active">
+                ▦ &nbsp; Dashboard
+            </a>
+
+            <a href="organizer-tickets.html" class="nav-link">
+                ▤ &nbsp; Registered Tickets
+            </a>
+
+            <a href="index.html" class="nav-link">
+                ⌂ &nbsp; Visit Homepage
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="profile">
+                <div class="avatar">O</div>
+
+                <div>
+                    <div class="profile-name">Organizer</div>
+                    <div class="profile-role">Event Administrator</div>
+                </div>
+            </div>
+
+            <button class="logout-button" onclick="logout()">
+                ↪ &nbsp; Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <div class="page-label">OVERVIEW</div>
+                <h1>Organizer Dashboard</h1>
+                <p>Monitor registrations and manage your event passes.</p>
+            </div>
+
+            <button
+                class="refresh-button"
+                id="refreshButton"
+                onclick="loadStatistics()">
+                ↻ &nbsp; Refresh Statistics
+            </button>
+
+        </header>
+
+
+        <section class="welcome-banner">
+
+            <div>
+                <h2>Welcome to your workspace 👋</h2>
+
+                <p>
+                    Here's what's happening with your events.
+                    Review registrations and monitor ticket usage.
+                </p>
+            </div>
+
+            <div class="badge">● &nbsp; Dashboard Overview</div>
+
+        </section>
+
+
+        <div class="section-heading">
+            <h2>Registration Overview</h2>
+            <p id="lastUpdated">Waiting for data...</p>
+        </div>
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-title">Total Registrations</span>
+                    <span class="stat-icon icon-blue">🎟️</span>
+                </div>
+
+                <div class="stat-number" id="totalTickets">—</div>
+
+                <div class="stat-description">All tickets generated</div>
+
+                <div class="mini-progress">
+                    <span class="blue-fill" id="totalProgress"></span>
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-title">Tickets Used</span>
+                    <span class="stat-icon icon-green">✓</span>
+                </div>
+
+                <div class="stat-number" id="usedTickets">—</div>
+
+                <div class="stat-description">Passes checked in</div>
+
+                <div class="mini-progress">
+                    <span class="green-fill" id="usedProgress"></span>
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-title">Tickets Not Used</span>
+                    <span class="stat-icon icon-orange">◷</span>
+                </div>
+
+                <div class="stat-number" id="unusedTickets">—</div>
+
+                <div class="stat-description">Passes awaiting check-in</div>
+
+                <div class="mini-progress">
+                    <span class="orange-fill" id="unusedProgress"></span>
+                </div>
+            </div>
+
+        </section>
+
+
+        <section class="content-grid">
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>Event-wise Registrations</h3>
+                        <p>Registration distribution across your events</p>
+                    </div>
+
+                    <span class="panel-tag">EVENTS</span>
+                </div>
+
+                <p id="loading">Loading event statistics...</p>
+                <div id="eventList"></div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>Ticket Usage</h3>
+                        <p>Overall check-in progress</p>
+                    </div>
+                </div>
+
+                <div class="usage-number" id="usagePercentage">—%</div>
+
+                <div class="usage-subtitle">
+                    Percentage of registered tickets used
+                </div>
+
+                <div class="usage-bar">
+                    <div class="usage-bar-fill" id="usageBar"></div>
+                </div>
+
+                <div class="usage-legend">
+                    <div class="legend-item">
+                        Used
+                        <strong id="usageUsed">—</strong>
+                    </div>
+
+                    <div class="legend-item">
+                        Remaining
+                        <strong id="usageUnused">—</strong>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="section-heading">
+            <h2>Quick Actions</h2>
+        </div>
+
+
+        <a href="organizer-tickets.html" class="action-card">
+
+            <div class="action-icon">🎫</div>
+
+            <div>
+                <h4>View Registered Tickets</h4>
+
+                <p>
+                    Search participants, filter events,
+                    and review ticket status.
+                </p>
+            </div>
+
+            <span class="action-arrow">›</span>
+
+        </a>
+
+
+        <div id="errorMessage" role="alert"></div>
+
+        <footer class="footer">
+            EVENTPASS TT · EVENT MANAGEMENT SYSTEM
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+function setText(id, value) {
+    document.getElementById(id).textContent = value;
+}
+
+function setProgress(id, percentage) {
+    document.getElementById(id).style.width =
+        Math.max(0, Math.min(100, percentage)) + "%";
+}
+
+async function loadStatistics() {
+
+    const refreshButton = document.getElementById("refreshButton");
+    const loading = document.getElementById("loading");
+    const errorMessage = document.getElementById("errorMessage");
+    const eventList = document.getElementById("eventList");
+
+    refreshButton.disabled = true;
+    refreshButton.textContent = "↻ Loading...";
+    errorMessage.style.display = "none";
+    loading.style.display = "block";
+    loading.textContent = "Loading event statistics...";
+
+    try {
+
+        const response = await fetch("/tickets", {
+            headers: {
+                "Accept": "application/json"
+            },
+            cache: "no-store"
+        });
+
+        if (!response.ok) {
+            throw new Error("Unable to retrieve tickets.");
+        }
+
+        const tickets = await response.json();
+
+        if (!Array.isArray(tickets)) {
+            throw new Error("Unexpected response from server.");
+        }
+
+        const total = tickets.length;
+
+        const used = tickets.filter(
+            ticket => ticket.used === true
+        ).length;
+
+        const unused = total - used;
+
+        const usedPercentage = total
+            ? Math.round((used / total) * 100)
+            : 0;
+
+        const unusedPercentage = total
+            ? Math.round((unused / total) * 100)
+            : 0;
+
+
+        setText("totalTickets", total);
+        setText("usedTickets", used);
+        setText("unusedTickets", unused);
+
+        setProgress("totalProgress", total > 0 ? 100 : 0);
+        setProgress("usedProgress", usedPercentage);
+        setProgress("unusedProgress", unusedPercentage);
+
+        setText("usagePercentage", usedPercentage + "%");
+        setText("usageUsed", used);
+        setText("usageUnused", unused);
+
+        setProgress("usageBar", usedPercentage);
+
+
+        const eventCounts = {};
+
+        tickets.forEach(ticket => {
+            const name = ticket.eventName || "Unnamed Event";
+            eventCounts[name] = (eventCounts[name] || 0) + 1;
+        });
+
+        eventList.replaceChildren();
+
+        const sortedEvents = Object.entries(eventCounts)
+            .sort((a, b) => b[1] - a[1]);
+
+        if (sortedEvents.length === 0) {
+
+            loading.textContent =
+                "No registrations yet. Event statistics will appear here after participants register.";
+
+        } else {
+
+            loading.style.display = "none";
+
+            const maxCount = Math.max(
+                ...sortedEvents.map(event => event[1])
+            );
+
+            sortedEvents.forEach(([name, count]) => {
+
+                const row = document.createElement("div");
+                row.className = "event-row";
+
+                const info = document.createElement("div");
+                info.className = "event-info";
+
+                const eventName = document.createElement("span");
+                eventName.className = "event-name";
+                eventName.textContent = name;
+
+                const countLabel = document.createElement("span");
+                countLabel.className = "event-count";
+                countLabel.textContent = count + " registrations";
+
+                info.appendChild(eventName);
+                info.appendChild(countLabel);
+
+                const bar = document.createElement("div");
+                bar.className = "event-bar";
+
+                const fill = document.createElement("div");
+                fill.className = "event-bar-fill";
+                fill.style.width = Math.max(5, count / maxCount * 100) + "%";
+
+                bar.appendChild(fill);
+                row.appendChild(info);
+                row.appendChild(bar);
+
+                eventList.appendChild(row);
+
+            });
+
+        }
+
+        setText(
+            "lastUpdated",
+            "Updated at " + new Date().toLocaleTimeString()
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        loading.style.display = "block";
+        loading.textContent = "Statistics could not be loaded.";
+
+        errorMessage.textContent =
+            "Unable to load ticket statistics. Check that your Spring Boot application is running.";
+
+        errorMessage.style.display = "block";
+
+    } finally {
+
+        refreshButton.disabled = false;
+        refreshButton.textContent = "↻  Refresh Statistics";
+
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem("eventpassOrganizerLoggedIn");
+    window.location.replace("organizer-login.html");
+}
+
+loadStatistics();
+</script>
+
+</body>
+</html>

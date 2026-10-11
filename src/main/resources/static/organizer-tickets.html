@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EventPass TT | Registered Tickets</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #080d1b;
+    --sidebar: #0c1325;
+    --card: #111b30;
+    --blue: #3984ff;
+    --cyan: #55d6ff;
+    --green: #35d39a;
+    --orange: #ffb454;
+    --red: #ff6577;
+    --text: #f4f7ff;
+    --muted: #929db5;
+    --border: rgba(255,255,255,0.08);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+button,
+input,
+select {
+    font-family: inherit;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 245px;
+    flex-shrink: 0;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    padding: 26px 17px;
+    display: flex;
+    flex-direction: column;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 9px 35px;
+}
+
+.logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.brand-name {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.brand-name span {
+    color: var(--cyan);
+}
+
+.brand-subtitle {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.nav-label {
+    color: #68748c;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    padding: 0 12px;
+    margin-bottom: 12px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px;
+    margin-bottom: 7px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: rgba(57,132,255,0.13);
+    color: var(--cyan);
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border-top: 1px solid var(--border);
+    padding: 18px 8px;
+    margin-top: 25px;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), #745cff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.profile-name {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.profile-role {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.logout-button {
+    width: 100%;
+    padding: 12px;
+    color: var(--red);
+    background: rgba(255,101,119,0.08);
+    border: 1px solid rgba(255,101,119,0.15);
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background: rgba(255,101,119,0.16);
+}
+
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 32px 36px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border);
+}
+
+.page-label {
+    color: var(--cyan);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    margin-bottom: 9px;
+    font-weight: bold;
+}
+
+.topbar h1 {
+    font-size: 27px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 9px;
+}
+
+.refresh-button {
+    background: #14213a;
+    color: white;
+    border: 1px solid #263653;
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+}
+
+.refresh-button:hover {
+    background: #1c3154;
+}
+
+.summary-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    margin-top: 28px;
+    padding: 24px;
+
+    border: 1px solid rgba(57,132,255,0.2);
+    border-radius: 15px;
+
+    background:
+        radial-gradient(circle at 90% 10%, rgba(85,214,255,0.13), transparent 30%),
+        linear-gradient(110deg, #13264a, #111b30);
+}
+
+.summary-card h2 {
+    font-size: 17px;
+    margin-bottom: 8px;
+}
+
+.summary-card p {
+    font-size: 12px;
+    line-height: 1.7;
+    color: #aebbd4;
+}
+
+.total-badge {
+    min-width: 100px;
+    padding: 15px 20px;
+    text-align: center;
+    border: 1px solid rgba(85,214,255,0.2);
+    background: rgba(57,132,255,0.1);
+    border-radius: 12px;
+}
+
+.total-badge strong {
+    display: block;
+    color: var(--cyan);
+    font-size: 28px;
+}
+
+.total-badge span {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.table-panel {
+    margin-top: 25px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding: 23px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-header h3 {
+    font-size: 15px;
+}
+
+.panel-header p {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 7px;
+}
+
+.filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+input,
+select {
+    padding: 12px 14px;
+    color: var(--text);
+    background: #0a1122;
+    border: 1px solid #27334b;
+    border-radius: 9px;
+    outline: none;
+    font-size: 12px;
+}
+
+input {
+    flex: 1;
+    min-width: 200px;
+}
+
+select {
+    min-width: 190px;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(57,132,255,0.12);
+}
+
+input::placeholder {
+    color: #65718a;
+}
+
+select option {
+    background: #111b30;
+    color: white;
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+thead {
+    background: #0c1426;
+}
+
+th {
+    text-align: left;
+    padding: 16px 20px;
+    color: #aab8d1;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+    font-weight: bold;
+}
+
+td {
+    padding: 17px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: #e3eaf8;
+}
+
+tbody tr {
+    transition: 0.2s;
+}
+
+tbody tr:hover {
+    background: rgba(57,132,255,0.05);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ticket-id {
+    color: var(--cyan);
+    font-weight: bold;
+    letter-spacing: 0.3px;
+}
+
+.participant-name {
+    font-weight: bold;
+}
+
+.event-name {
+    color: #bdc9df;
+}
+
+.status {
+    display: inline-block;
+    padding: 7px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.status.used {
+    background: rgba(53,211,154,0.1);
+    border: 1px solid rgba(53,211,154,0.2);
+    color: var(--green);
+}
+
+.status.unused {
+    background: rgba(255,180,84,0.1);
+    border: 1px solid rgba(255,180,84,0.2);
+    color: var(--orange);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 45px 20px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 17px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+}
+
+#errorMessage {
+    display: none;
+    margin: 20px 24px;
+    padding: 13px;
+    border-radius: 10px;
+    background: rgba(255,101,119,0.1);
+    border: 1px solid rgba(255,101,119,0.2);
+    color: #ff8795;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.footer {
+    text-align: center;
+    color: #59657c;
+    font-size: 10px;
+    margin-top: 30px;
+}
+
+@media(max-width: 900px) {
+    .sidebar {
+        width: 215px;
+    }
+
+    .main {
+        padding: 25px 20px;
+    }
+}
+
+@media(max-width: 720px) {
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 15px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        padding: 0 5px 15px;
+    }
+
+    .nav-label,
+    .sidebar-bottom {
+        display: none;
+    }
+
+    .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+    }
+
+    .nav-link {
+        white-space: nowrap;
+        padding: 10px;
+        margin: 0;
+    }
+
+    .main {
+        padding: 22px 12px;
+    }
+
+    .topbar h1 {
+        font-size: 23px;
+    }
+
+    .filters {
+        padding: 15px;
+    }
+
+    input,
+    select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    th,
+    td {
+        padding: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="logo">EP</div>
+
+            <div>
+                <div class="brand-name">EVENTPASS <span>TT</span></div>
+                <div class="brand-subtitle">EVENT MANAGEMENT</div>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav>
+            <a href="organizer-dashboard.html" class="nav-link">
+                ▦ &nbsp; Dashboard
+            </a>
+
+            <a href="organizer-tickets.html" class="nav-link active">
+                ▤ &nbsp; Registered Tickets
+            </a>
+
+            <a href="index.html" class="nav-link">
+                ⌂ &nbsp; Visit Homepage
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="profile">
+                <div class="avatar">O</div>
+
+                <div>
+                    <div class="profile-name">Organizer</div>
+                    <div class="profile-role">Event Administrator</div>
+                </div>
+            </div>
+
+            <button class="logout-button" onclick="logout()">
+                ↪ &nbsp; Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <div class="page-label">REGISTRATION MANAGEMENT</div>
+                <h1>Registered Tickets</h1>
+
+                <p>
+                    Search participants, filter events, and review ticket status.
+                </p>
+            </div>
+
+            <button
+                class="refresh-button"
+                id="refreshButton"
+                onclick="loadTickets()">
+                ↻ &nbsp; Refresh Tickets
+            </button>
+
+        </header>
+
+
+        <section class="summary-card">
+
+            <div>
+                <h2>Participant Registrations</h2>
+
+                <p>
+                    All generated event passes are listed below.
+                    Use the search and event filter to find a ticket.
+                </p>
+            </div>
+
+            <div class="total-badge">
+                <strong id="totalCount">—</strong>
+                <span>TOTAL TICKETS</span>
+            </div>
+
+        </section>
+
+
+        <section class="table-panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h3>All Registered Participants</h3>
+                    <p>Ticket details and entry verification status</p>
+                </div>
+
+            </div>
+
+
+            <div class="filters">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search participant or ticket ID..."
+                    aria-label="Search participant or ticket ID"
+                >
+
+                <select id="eventFilter" aria-label="Filter by event">
+                    <option value="">All Events</option>
+                </select>
+
+                <select id="statusFilter" aria-label="Filter by ticket status">
+                    <option value="">All Statuses</option>
+                    <option value="used">Used</option>
+                    <option value="unused">Not Used</option>
+                </select>
+
+            </div>
+
+
+            <div id="errorMessage" role="alert"></div>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>TICKET ID</th>
+                            <th>PARTICIPANT</th>
+                            <th>EVENT</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="ticketTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                Loading registered tickets...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="table-footer">
+                <span id="showingCount">Loading records...</span>
+                <span>EVENTPASS TT · TICKET MANAGEMENT</span>
+            </div>
+
+        </section>
+
+
+        <footer class="footer">
+            EVENTPASS TT · EVENT MANAGEMENT SYSTEM
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+let allTickets = [];
+
+function logout() {
+    sessionStorage.removeItem("eventpassOrganizerLoggedIn");
+    window.location.replace("organizer-login.html");
+}
+
+function createCell(value, className) {
+    const cell = document.createElement("td");
+    cell.textContent = value ?? "";
+
+    if (className) {
+        cell.className = className;
+    }
+
+    return cell;
+}
+
+async function loadTickets() {
+
+    const refreshButton = document.getElementById("refreshButton");
+    const errorMessage = document.getElementById("errorMessage");
+    const tbody = document.getElementById("ticketTableBody");
+
+    refreshButton.disabled = true;
+    refreshButton.textContent = "↻ Loading...";
+    errorMessage.style.display = "none";
+
+    tbody.replaceChildren();
+
+    const loadingRow = document.createElement("tr");
+    const loadingCell = document.createElement("td");
+
+    loadingCell.colSpan = 5;
+    loadingCell.className = "empty-state";
+    loadingCell.textContent = "Loading registered tickets...";
+
+    loadingRow.appendChild(loadingCell);
+    tbody.appendChild(loadingRow);
+
+    try {
+
+        const response = await fetch("/tickets", {
+            headers: {
+                "Accept": "application/json"
+            },
+            cache: "no-store"
+        });
+
+        if (!response.ok) {
+            throw new Error("Unable to retrieve tickets.");
+        }
+
+        const tickets = await response.json();
+
+        if (!Array.isArray(tickets)) {
+            throw new Error("Unexpected response from server.");
+        }
+
+        allTickets = tickets;
+
+        const eventFilter = document.getElementById("eventFilter");
+        const previousEvent = eventFilter.value;
+
+        const events = [
+            ...new Set(
+                allTickets.map(ticket => ticket.eventName || "Unnamed Event")
+            )
+        ].sort();
+
+        eventFilter.replaceChildren();
+
+        const allEventsOption = document.createElement("option");
+        allEventsOption.value = "";
+        allEventsOption.textContent = "All Events";
+        eventFilter.appendChild(allEventsOption);
+
+        events.forEach(eventName => {
+            const option = document.createElement("option");
+            option.value = eventName;
+            option.textContent = eventName;
+            eventFilter.appendChild(option);
+        });
+
+        if (events.includes(previousEvent)) {
+            eventFilter.value = previousEvent;
+        }
+
+        renderTickets();
+
+    } catch (error) {
+
+        console.error("Ticket loading error:", error);
+
+        tbody.replaceChildren();
+
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+
+        cell.colSpan = 5;
+        cell.className = "empty-state";
+        cell.textContent = "Unable to load tickets. Please try again.";
+
+        row.appendChild(cell);
+        tbody.appendChild(row);
+
+        errorMessage.textContent =
+            "Could not load registered tickets. Check that your Spring Boot backend is running.";
+
+        errorMessage.style.display = "block";
+
+        document.getElementById("totalCount").textContent = "—";
+        document.getElementById("showingCount").textContent = "Unable to load records.";
+
+    } finally {
+
+        refreshButton.disabled = false;
+        refreshButton.textContent = "↻  Refresh Tickets";
+
+    }
+}
+
+function renderTickets() {
+
+    const tbody = document.getElementById("ticketTableBody");
+
+    const search = document.getElementById("searchInput")
+        .value.trim().toLowerCase();
+
+    const selectedEvent = document.getElementById("eventFilter").value;
+    const selectedStatus = document.getElementById("statusFilter").value;
+
+    const filtered = allTickets.filter(ticket => {
+
+        const participant = (ticket.participantName || "").toLowerCase();
+        const ticketId = (ticket.ticketId || "").toLowerCase();
+        const eventName = ticket.eventName || "Unnamed Event";
+
+        const matchesSearch =
+            participant.includes(search) ||
+            ticketId.includes(search);
+
+        const matchesEvent =
+            !selectedEvent || eventName === selectedEvent;
+
+        const matchesStatus =
+            !selectedStatus ||
+            (selectedStatus === "used" && ticket.used === true) ||
+            (selectedStatus === "unused" && ticket.used !== true);
+
+        return matchesSearch && matchesEvent && matchesStatus;
+
+    });
+
+    tbody.replaceChildren();
+
+    document.getElementById("totalCount").textContent = allTickets.length;
+
+    document.getElementById("showingCount").textContent =
+        "Showing " + filtered.length + " of " + allTickets.length + " tickets";
+
+    if (filtered.length === 0) {
+
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+
+        cell.colSpan = 5;
+        cell.className = "empty-state";
+        cell.textContent = allTickets.length === 0
+            ? "No registrations found yet."
+            : "No tickets match your search or filters.";
+
+        row.appendChild(cell);
+        tbody.appendChild(row);
+
+        return;
+    }
+
+    filtered.forEach(ticket => {
+
+        const row = document.createElement("tr");
+
+        row.appendChild(createCell(ticket.id));
+
+        row.appendChild(
+            createCell(ticket.ticketId || "—", "ticket-id")
+        );
+
+        row.appendChild(
+            createCell(ticket.participantName || "—", "participant-name")
+        );
+
+        row.appendChild(
+            createCell(ticket.eventName || "Unnamed Event", "event-name")
+        );
+
+        const statusCell = document.createElement("td");
+        const statusBadge = document.createElement("span");
+
+        if (ticket.used === true) {
+            statusBadge.className = "status used";
+            statusBadge.textContent = "USED";
+        } else {
+            statusBadge.className = "status unused";
+            statusBadge.textContent = "NOT USED";
+        }
+
+        statusCell.appendChild(statusBadge);
+        row.appendChild(statusCell);
+
+        tbody.appendChild(row);
+
+    });
+}
+
+document.getElementById("searchInput")
+    .addEventListener("input", renderTickets);
+
+document.getElementById("eventFilter")
+    .addEventListener("change", renderTickets);
+
+document.getElementById("statusFilter")
+    .addEventListener("change", renderTickets);
+
+loadTickets();
+</script>
+
+</body>
+</html>

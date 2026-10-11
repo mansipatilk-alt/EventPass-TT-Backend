@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPass - QR Scanner</title>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7ff;
+            color: #142747;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            height: 75px;
+            background: #102341;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6%;
+            box-shadow: 0 3px 15px rgba(15, 35, 70, 0.12);
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .logo span {
+            color: #4c83ff;
+        }
+
+        .home-btn {
+            background: #2864ed;
+            color: white;
+            text-decoration: none;
+            padding: 12px 23px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .home-btn:hover {
+            background: #174bc5;
+            transform: translateY(-2px);
+        }
+
+        /* PAGE HEADING */
+
+        .page-heading {
+            text-align: center;
+            padding: 43px 20px 30px;
+        }
+
+        .eyebrow {
+            color: #3478f6;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+
+        .page-heading h1 {
+            font-size: clamp(32px, 4vw, 46px);
+            margin-bottom: 13px;
+            color: #142747;
+        }
+
+        .page-heading h1 span {
+            color: #3478f6;
+        }
+
+        .page-heading p {
+            color: #70809c;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* MAIN SCANNER CARD */
+
+        .scanner-container {
+            max-width: 1160px;
+            margin: 0 auto 45px;
+            padding: 20px;
+        }
+
+        .scanner-card {
+            background: white;
+            border: 1px solid #dce7fc;
+            border-radius: 20px;
+            box-shadow: 0 15px 45px rgba(35, 84, 160, 0.09);
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            overflow: hidden;
+        }
+
+        .scanner-left {
+            padding: 28px;
+            border-right: 1px solid #e6edfa;
+        }
+
+        .scanner-right {
+            padding: 28px;
+            background: #ffffff;
+        }
+
+        /* SCANNER STATUS */
+
+        .scanner-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .camera-icon {
+            width: 46px;
+            height: 46px;
+            background: #eaf1ff;
+            color: #2864ed;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 23px;
+        }
+
+        .status-title {
+            font-weight: bold;
+            font-size: 15px;
+            color: #2464ed;
+            margin-bottom: 5px;
+        }
+
+        .status-description {
+            color: #7c8aa5;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            display: inline-block;
+            height: 8px;
+            width: 8px;
+            background: #19b66a;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        /* CAMERA AREA */
+
+        #reader {
+            width: 100%;
+            max-width: 100%;
+            min-height: 280px;
+            border: 1px solid #dce6f7 !important;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #f8faff;
+        }
+
+        #reader video {
+            border-radius: 12px;
+        }
+
+        #reader img {
+            max-width: 100%;
+        }
+
+        #reader button {
+            background: #2864ed;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            margin: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #reader a {
+            color: #2864ed;
+        }
+
+        #reader select {
+            padding: 8px;
+            border: 1px solid #dce6f7;
+            border-radius: 8px;
+            max-width: 100%;
+        }
+
+        #reader__dashboard_section {
+            padding: 12px;
+        }
+
+        /* MANUAL ENTRY */
+
+        .manual-entry {
+            margin-top: 18px;
+            background: #f2f6ff;
+            border: 1px solid #dce7ff;
+            border-radius: 13px;
+            padding: 20px;
+        }
+
+        .manual-entry h3 {
+            font-size: 15px;
+            margin-bottom: 15px;
+            color: #193966;
+        }
+
+        .manual-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .manual-form input {
+            flex: 1;
+            min-width: 0;
+            padding: 13px;
+            border: 1px solid #d6e0f1;
+            border-radius: 9px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .manual-form input:focus {
+            border-color: #3478f6;
+            box-shadow: 0 0 0 3px rgba(52, 120, 246, 0.1);
+        }
+
+        .verify-btn {
+            border: none;
+            background: #2864ed;
+            color: white;
+            padding: 12px 17px;
+            border-radius: 9px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .verify-btn:hover {
+            background: #174bc5;
+        }
+
+        /* VERIFICATION HEADER */
+
+        .verification-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            background: #f0f5ff;
+            border: 1px solid #dce7ff;
+            border-radius: 13px;
+            margin-bottom: 20px;
+        }
+
+        .shield-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 12px;
+            background: #dce9ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #2864ed;
+            font-size: 23px;
+        }
+
+        .verification-header h2 {
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .verification-header p {
+            font-size: 12px;
+            color: #71819c;
+            line-height: 1.5;
+        }
+
+        /* RESULT DISPLAY */
+
+        .result-box {
+            min-height: 190px;
+            padding: 25px 15px;
+            border: 1px solid #e1e9f7;
+            background: #fbfcff;
+            border-radius: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .result-icon {
+            height: 75px;
+            width: 75px;
+            background: #eaf1ff;
+            color: #3478f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .result-box h3 {
+            font-size: 18px;
+            margin-bottom: 9px;
+        }
+
+        .result-box p {
+            font-size: 13px;
+            color: #7887a0;
+            line-height: 1.5;
+        }
+
+        /* STATUS LEGEND */
+
+        .result-types {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        .result-type {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            border: 1px solid #e4ebf6;
+            padding: 14px;
+            border-radius: 12px;
+            background: white;
+        }
+
+        .type-icon {
+            height: 38px;
+            width: 38px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .green {
+            background: #16ad69;
+        }
+
+        .orange {
+            background: #f5a623;
+        }
+
+        .red {
+            background: #ee4356;
+        }
+
+        .result-type h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .result-type p {
+            font-size: 12px;
+            color: #8290a6;
+        }
+
+        /* RESULT COLORS */
+
+        .result-box.valid {
+            background: #effcf5;
+            border-color: #a9e8c5;
+        }
+
+        .result-box.valid .result-icon {
+            background: #d1f7e2;
+            color: #0b9c56;
+        }
+
+        .result-box.used {
+            background: #fff8ed;
+            border-color: #ffdda6;
+        }
+
+        .result-box.used .result-icon {
+            background: #ffedce;
+            color: #dc8b08;
+        }
+
+        .result-box.invalid {
+            background: #fff1f2;
+            border-color: #ffc3ca;
+        }
+
+        .result-box.invalid .result-icon {
+            background: #ffe0e4;
+            color: #e43149;
+        }
+
+        /* BACK LINK */
+
+        .bottom-link {
+            text-align: center;
+            padding: 0 0 30px;
+        }
+
+        .bottom-link a {
+            text-decoration: none;
+            color: #2864ed;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .bottom-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+
+        @media (max-width: 800px) {
+            .scanner-card {
+                grid-template-columns: 1fr;
+            }
+
+            .scanner-left {
+                border-right: none;
+                border-bottom: 1px solid #e6edfa;
+            }
+
+            .scanner-left,
+            .scanner-right {
+                padding: 20px;
+            }
+
+            .page-heading {
+                padding-top: 32px;
+            }
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .manual-form {
+                flex-direction: column;
+            }
+
+            .manual-form button {
+                width: 100%;
+            }
+
+            .scanner-container {
+                padding: 12px;
+            }
+
+            .page-heading h1 {
+                font-size: 31px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+        <div class="logo">EVENT PASS <span>TT.</span></div>
+        <a href="index.html" class="home-btn">⌂ &nbsp; Home</a>
+    </nav>
+
+    <!-- HEADING -->
+
+    <section class="page-heading">
+        <div class="eyebrow">FAST &nbsp; • &nbsp; SECURE &nbsp; • &nbsp; SEAMLESS</div>
+        <h1>QR Code <span>Scanner</span></h1>
+        <p>Scan the participant's QR code to verify entry.</p>
+    </section>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="scanner-container">
+        <div class="scanner-card">
+
+            <!-- LEFT SIDE -->
+
+            <section class="scanner-left">
+
+                <div class="scanner-status">
+                    <div class="camera-icon">▣</div>
+
+                    <div>
+                        <div class="status-title">
+                            Scanner Ready <span class="status-dot"></span>
+                        </div>
+
+                        <div class="status-description">
+                            Use your camera to scan a ticket
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing QR scanner mounts here -->
+                <div id="reader"></div>
+
+                <!-- MANUAL TICKET ID ENTRY -->
+
+                <div class="manual-entry">
+                    <h3>⌨ &nbsp; Enter Ticket ID Manually</h3>
+
+                    <form class="manual-form" id="manualForm">
+                        <input
+                            type="text"
+                            id="ticketIdInput"
+                            placeholder="Example: EP-A1B2C3D4"
+                            autocomplete="off"
+                        >
+
+                        <button type="submit" class="verify-btn">
+                            Verify Ticket
+                        </button>
+                    </form>
+                </div>
+
+            </section>
+
+            <!-- RIGHT SIDE -->
+
+            <section class="scanner-right">
+
+                <div class="verification-header">
+                    <div class="shield-icon">♢</div>
+
+                    <div>
+                        <h2>Verification Result</h2>
+                        <p>Scan a ticket to see the result here.</p>
+                    </div>
+                </div>
+
+                <!-- Result updates after verification -->
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-icon" id="resultIcon">▦</div>
+
+                    <h3 id="resultTitle">Waiting for scan...</h3>
+
+                    <p id="resultMessage">
+                        Please scan a participant's QR code.
+                    </p>
+                </div>
+
+                <!-- STATUS LEGEND -->
+
+                <div class="result-types">
+
+                    <div class="result-type">
+                        <div class="type-icon green">✓</div>
+
+                        <div>
+                            <h4>Valid Ticket</h4>
+                            <p>Entry allowed</p>
+                        </div>
+                    </div>
+
+                    <div class="result-type">
+                        <div class="type-icon orange">◷</div>
+
+                        <div>
+                            <h4>Already Used</h4>
+                            <p>Entry denied</p>
+                        </div>
+                    </div>
+
+                    <div class="result-type">
+                        <div class="type-icon red">×</div>
+
+                        <div>
+                            <h4>Invalid Ticket</h4>
+                            <p>Entry denied</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <div class="bottom-link">
+        <a href="index.html">← Back to Home</a>
+    </div>
+
+    <script>
+        const resultBox = document.getElementById("resultBox");
+        const resultIcon = document.getElementById("resultIcon");
+        const resultTitle = document.getElementById("resultTitle");
+        const resultMessage = document.getElementById("resultMessage");
+
+        let verificationInProgress = false;
+
+        function showResult(type, title, message, icon) {
+            resultBox.className = "result-box";
+
+            if (type) {
+                resultBox.classList.add(type);
+            }
+
+            resultIcon.textContent = icon;
+            resultTitle.textContent = title;
+            resultMessage.textContent = message;
+        }
+
+        async function verifyTicket(ticketId) {
+            ticketId = ticketId.trim();
+
+            if (!ticketId || verificationInProgress) {
+                return;
+            }
+
+            verificationInProgress = true;
+
+            showResult(
+                "",
+                "Verifying ticket...",
+                "Please wait while the ticket is checked.",
+                "…"
+            );
+
+            try {
+                const response = await fetch(
+                    "/verify?ticketId=" + encodeURIComponent(ticketId)
+                );
+
+                const result = (await response.text()).trim();
+
+                if (result.includes("VALID TICKET")) {
+                    showResult(
+                        "valid",
+                        "Valid Ticket!",
+                        "Entry allowed. Ticket ID: " + ticketId,
+                        "✓"
+                    );
+                } else if (result.includes("ALREADY USED")) {
+                    showResult(
+                        "used",
+                        "Ticket Already Used",
+                        "Entry denied. This ticket has already been scanned.",
+                        "◷"
+                    );
+                } else {
+                    showResult(
+                        "invalid",
+                        "Invalid Ticket",
+                        "Entry denied. This ticket could not be verified.",
+                        "×"
+                    );
+                }
+
+            } catch (error) {
+                showResult(
+                    "invalid",
+                    "Verification Failed",
+                    "Could not connect to the server. Please try again.",
+                    "!"
+                );
+
+            } finally {
+                verificationInProgress = false;
+            }
+        }
+
+        // Preserve camera scanning functionality.
+        // QR codes are expected to contain the ticket ID.
+
+        function onScanSuccess(decodedText) {
+            verifyTicket(decodedText);
+        }
+
+        const html5QrCode = new Html5QrcodeScanner(
+            "reader",
+            {
+                fps: 10,
+                qrbox: {
+                    width: 220,
+                    height: 220
+                }
+            },
+            false
+        );
+
+        html5QrCode.render(onScanSuccess);
+
+        // Manual ticket ID verification
+
+        document.getElementById("manualForm").addEventListener(
+            "submit",
+            function (event) {
+                event.preventDefault();
+
+                const ticketId = document
+                    .getElementById("ticketIdInput")
+                    .value;
+
+                verifyTicket(ticketId);
+            }
+        );
+    </script>
+
+</body>
+</html>

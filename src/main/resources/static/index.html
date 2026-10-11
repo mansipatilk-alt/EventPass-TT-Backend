@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Event Pass TT | Smart Event Entry</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #080d1b;
+            --card: #111a2e;
+            --primary: #6485ff;
+            --text: #f8fafc;
+            --muted: #9caac2;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 8%;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-button {
+            background: var(--primary);
+            color: white;
+            padding: 11px 18px;
+            border-radius: 9px;
+        }
+
+        /* HERO SECTION */
+
+        .hero {
+            width: 84%;
+            max-width: 1200px;
+            margin: 85px auto 70px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: center;
+            gap: 65px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 13px;
+            border: 1px solid rgba(100, 133, 255, 0.35);
+            border-radius: 30px;
+            background: rgba(100, 133, 255, 0.1);
+            color: #a8b9ff;
+            font-size: 12px;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 5vw, 67px);
+            line-height: 1.12;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero-description {
+            color: var(--muted);
+            font-size: 16px;
+            max-width: 510px;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .button-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .button-secondary {
+            border: 1px solid var(--border);
+            color: white;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+        }
+
+        /* DIGITAL TICKET PREVIEW */
+
+        .ticket-preview {
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(100, 133, 255, 0.22),
+                    transparent 55%
+                ),
+                var(--card);
+
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ticket-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 23px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .ticket-label {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .ticket-logo {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .ticket-logo span {
+            color: var(--primary);
+        }
+
+        .ticket-main {
+            padding: 30px 0;
+        }
+
+        .ticket-main h2 {
+            font-size: 29px;
+            margin: 8px 0;
+        }
+
+        .ticket-main p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .ticket-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding-top: 22px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .ticket-status {
+            color: #6ee7b7;
+            font-size: 13px;
+        }
+
+        .qr-placeholder {
+            width: 90px;
+            height: 90px;
+            border-radius: 10px;
+            background: white;
+            padding: 8px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 3px;
+        }
+
+        .qr-placeholder span {
+            background: #111827;
+            border-radius: 1px;
+        }
+
+        .qr-placeholder span:nth-child(2n),
+        .qr-placeholder span:nth-child(3n) {
+            background: white;
+        }
+
+        /* EXPLORE EVENTS SECTION */
+
+        .events-section {
+            width: 84%;
+            max-width: 1200px;
+            margin: 0 auto 90px;
+            padding-top: 15px;
+            scroll-margin-top: 30px;
+        }
+
+        .events-heading {
+            text-align: center;
+            margin-bottom: 42px;
+        }
+
+        .section-tag {
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+
+        .events-heading h2 {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .events-heading h2 span {
+            color: var(--primary);
+        }
+
+        .events-subtitle {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .events-container {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .event-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 28px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(100, 133, 255, 0.07),
+                    transparent 65%
+                ),
+                var(--card);
+
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            transition: 0.25s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(100, 133, 255, 0.65);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-icon {
+            width: 60px;
+            height: 60px;
+            min-width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(100, 133, 255, 0.13);
+            border: 1px solid rgba(100, 133, 255, 0.2);
+            border-radius: 15px;
+            font-size: 29px;
+        }
+
+        .event-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .event-category {
+            color: #91a8ff;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1.2px;
+        }
+
+        .event-info h3 {
+            font-size: 21px;
+            line-height: 1.4;
+            margin: 9px 0;
+        }
+
+        .event-info p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .event-register-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .event-register-btn:hover {
+            background: #4e70f0;
+            transform: translateY(-2px);
+        }
+
+        .event-register-btn span {
+            font-size: 18px;
+        }
+
+        /* FEATURES SECTION */
+
+        .section {
+            width: 84%;
+            max-width: 1200px;
+            margin: 0 auto 85px;
+            scroll-margin-top: 30px;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 38px;
+        }
+
+        .section-heading h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .feature-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 27px;
+            transition: 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(100, 133, 255, 0.6);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 30px;
+            margin-bottom: 17px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* CALL TO ACTION */
+
+        .cta {
+            width: 84%;
+            max-width: 1200px;
+            margin: 0 auto 75px;
+            padding: 45px 25px;
+            text-align: center;
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    120deg,
+                    rgba(100, 133, 255, 0.2),
+                    rgba(17, 26, 46, 0.9)
+                );
+
+            border: 1px solid var(--border);
+        }
+
+        .cta h2 {
+            font-size: 29px;
+            margin-bottom: 12px;
+        }
+
+        .cta p {
+            color: var(--muted);
+            margin-bottom: 25px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media (max-width: 850px) {
+            .hero {
+                grid-template-columns: 1fr;
+                margin-top: 55px;
+                gap: 40px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .events-container {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 13px;
+            }
+
+            .hero h1 {
+                font-size: 45px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .navbar {
+                padding: 18px 5%;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .nav-links {
+                font-size: 12px;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .nav-button {
+                padding: 9px 10px;
+            }
+
+            .hero,
+            .section,
+            .events-section,
+            .cta {
+                width: 90%;
+            }
+
+            .hero h1 {
+                font-size: 39px;
+            }
+
+            .ticket-preview {
+                padding: 21px;
+            }
+
+            .ticket-main h2 {
+                font-size: 24px;
+            }
+
+            .events-heading h2 {
+                font-size: 29px;
+            }
+
+            .event-card {
+                padding: 21px;
+                gap: 14px;
+            }
+
+            .event-icon {
+                width: 48px;
+                height: 48px;
+                min-width: 48px;
+                font-size: 24px;
+            }
+
+            .event-info h3 {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .nav-links {
+                gap: 9px;
+            }
+
+            .event-card {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <a href="index.html" class="logo">
+            EVENT PASS<span> TT.</span>
+        </a>
+
+        <div class="nav-links">
+
+            <a href="#events">Explore Events</a>
+
+            <a href="organizer-login.html">Organizer</a>
+
+            <a href="register.html" class="nav-button">
+                Get Your Pass
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main>
+
+        <!-- HERO SECTION -->
+
+        <section class="hero">
+
+            <div>
+
+                <div class="badge">
+                    SMART EVENT ENTRY SYSTEM
+                </div>
+
+                <h1>
+                    Your Event.<br>
+                    Your Pass.<br>
+                    <span>Your Moment.</span>
+                </h1>
+
+                <p class="hero-description">
+                    A smarter way to manage event registrations,
+                    generate digital tickets, and verify entry
+                    with unique QR codes. Simple for participants.
+                    Efficient for organizers.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a
+                        href="register.html"
+                        class="button button-primary"
+                    >
+                        Register for an Event →
+                    </a>
+
+                    <a
+                        href="scanner.html"
+                        class="button button-secondary"
+                    >
+                        Scan Event Pass
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- DECORATIVE DIGITAL TICKET -->
+
+            <div class="ticket-preview">
+
+                <div class="ticket-top">
+
+                    <div>
+
+                        <div class="ticket-label">
+                            Digital Entry Pass
+                        </div>
+
+                        <div class="ticket-logo">
+                            EVENT PASS<span> TT.</span>
+                        </div>
+
+                    </div>
+
+                    <div>✦</div>
+
+                </div>
+
+
+                <div class="ticket-main">
+
+                    <div class="ticket-label">
+                        YOUR NEXT EXPERIENCE
+                    </div>
+
+                    <h2>You're on the list.</h2>
+
+                    <p>
+                        Register for an event and get your
+                        unique digital ticket.
+                    </p>
+
+                </div>
+
+
+                <div class="ticket-bottom">
+
+                    <div>
+
+                        <div class="ticket-label">
+                            Entry Status
+                        </div>
+
+                        <div class="ticket-status">
+                            ● QR-Verified Entry
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="qr-placeholder"
+                        aria-label="Decorative QR-style illustration"
+                    >
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- EXPLORE EVENTS SECTION -->
+
+        <section class="events-section" id="events">
+
+            <div class="events-heading">
+
+                <p class="section-tag">
+                    FIND YOUR NEXT EXPERIENCE
+                </p>
+
+                <h2>
+                    Explore <span>Events</span>
+                </h2>
+
+                <p class="events-subtitle">
+                    Discover exciting events, learn new skills,
+                    and get your digital pass!
+                </p>
+
+            </div>
+
+
+            <div class="events-container">
+
+                <!-- EVENT 1: AI WORKSHOP -->
+
+                <div class="event-card">
+
+                    <div class="event-icon">
+                        🤖
+                    </div>
+
+                    <div class="event-info">
+
+                        <span class="event-category">
+                            ARTIFICIAL INTELLIGENCE
+                        </span>
+
+                        <h3>AI Workshop</h3>
+
+                        <p>
+                            Explore artificial intelligence,
+                            discover new tools, and learn through
+                            hands-on activities.
+                        </p>
+
+                        <a
+                            href="register.html?event=AI%20Workshop"
+                            class="event-register-btn"
+                        >
+                            Register Now <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EVENT 2: HACKATHON -->
+
+                <div class="event-card">
+
+                    <div class="event-icon">
+                        💻
+                    </div>
+
+                    <div class="event-info">
+
+                        <span class="event-category">
+                            INNOVATION
+                        </span>
+
+                        <h3>Hackathon</h3>
+
+                        <p>
+                            Turn your ideas into innovative
+                            solutions and challenge yourself
+                            to build something amazing.
+                        </p>
+
+                        <a
+                            href="register.html?event=Hackathon"
+                            class="event-register-btn"
+                        >
+                            Register Now <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EVENT 3: TECHNICAL QUIZ -->
+
+                <div class="event-card">
+
+                    <div class="event-icon">
+                        🧠
+                    </div>
+
+                    <div class="event-info">
+
+                        <span class="event-category">
+                            TECHNICAL CHALLENGE
+                        </span>
+
+                        <h3>Technical Quiz</h3>
+
+                        <p>
+                            Test your technical knowledge,
+                            think fast, and challenge yourself
+                            with exciting questions.
+                        </p>
+
+                        <a
+                            href="register.html?event=Technical%20Quiz"
+                            class="event-register-btn"
+                        >
+                            Register Now <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EVENT 4: CLOUD COMPUTING WORKSHOP -->
+
+                <div class="event-card">
+
+                    <div class="event-icon">
+                        ☁️
+                    </div>
+
+                    <div class="event-info">
+
+                        <span class="event-category">
+                            CLOUD TECHNOLOGY
+                        </span>
+
+                        <h3>Cloud Computing Workshop</h3>
+
+                        <p>
+                            Discover cloud computing concepts
+                            and explore how modern applications
+                            use cloud technologies.
+                        </p>
+
+                        <a
+                            href="register.html?event=Cloud%20Computing%20Workshop"
+                            class="event-register-btn"
+                        >
+                            Register Now <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FEATURES SECTION -->
+
+        <section class="section" id="features">
+
+            <div class="section-heading">
+
+                <h2>Everything you need. One pass.</h2>
+
+                <p>
+                    From registration to entry verification,
+                    we've made the process simpler.
+                </p>
+
+            </div>
+
+
+            <div class="features">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">🎟️</div>
+
+                    <h3>Instant Digital Tickets</h3>
+
+                    <p>
+                        Register for an event and receive a
+                        unique ticket with its own QR code.
+                        Download or print your pass.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">📱</div>
+
+                    <h3>Quick QR Verification</h3>
+
+                    <p>
+                        Scan tickets at the entrance and
+                        check their validity through the
+                        ticket verification system.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">📊</div>
+
+                    <h3>Organizer Dashboard</h3>
+
+                    <p>
+                        View registered tickets, monitor
+                        ticket usage, and explore event-wise
+                        registration statistics.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CALL TO ACTION -->
+
+        <section class="cta">
+
+            <h2>Your next event starts here.</h2>
+
+            <p>
+                Get registered, grab your pass, and make
+                your entry seamless.
+            </p>
+
+            <a
+                href="register.html"
+                class="button button-primary"
+            >
+                Get Started →
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        © 2026 Event Pass TT. Smart entry. Seamless experiences.
+
+    </footer>
+
+</body>
+
+</html>
